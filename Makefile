@@ -6,7 +6,7 @@
 #    By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/29 16:23:18 by sinawara          #+#    #+#              #
-#    Updated: 2024/11/23 13:41:01 by sinawara         ###   ########.fr        #
+#    Updated: 2024/11/25 10:08:05 by sinawara         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ RED     = \033[31m
 BURGUNDY = \033[38;5;88m
 BLUE    = \033[34m
 GREEN   = \033[32m
+MINECRAFT_GREEN = \033[38;5;70m 
 YELLOW  = \033[33m
 PINK    = \033[35m
 CYAN    = \033[36m
@@ -36,12 +37,12 @@ ORANGE  = \033[38;5;214m
 PURPLE  = \033[38;5;93m
 
 LOGO = printf "\n\
-$(BURGUNDY)██████╗ ██╗██████╗ ███████╗██╗  ██╗$(BURGUNDY)\n\
-$(BURGUNDY)██╔══██╗██║██╔══██╗██╔════╝╚██╗██╔╝$(BURGUNDY)\n\
-$(BURGUNDY)██████╔╝██║██████╔╝█████╗   ╚███╔╝ $(BURGUNDY)\n\
-$(BURGUNDY)██╔═══╝ ██║██╔═══╝ ██╔══╝   ██╔██╗ $(BURGUNDY)\n\
-$(BURGUNDY)██║     ██║██║     ███████╗██╔╝ ██╗$(BURGUNDY)\n\
-$(BURGUNDY)╚═╝     ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝$(BURGUNDY)\n"
+$(MINECRAFT_GREEN)██████╗ ██╗██████╗ ███████╗██╗  ██╗$(MINECRAFT_GREEN)\n\
+$(MINECRAFT_GREEN)██╔══██╗██║██╔══██╗██╔════╝╚██╗██╔╝$(MINECRAFT_GREEN)\n\
+$(MINECRAFT_GREEN)██████╔╝██║██████╔╝█████╗   ╚███╔╝ $(MINECRAFT_GREEN)\n\
+$(MINECRAFT_GREEN)██╔═══╝ ██║██╔═══╝ ██╔══╝   ██╔██╗ $(MINECRAFT_GREEN)\n\
+$(MINECRAFT_GREEN)██║     ██║██║     ███████╗██╔╝ ██╗$(MINECRAFT_GREEN)\n\
+$(MINECRAFT_GREEN)╚═╝     ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝$(MINECRAFT_GREEN)\n"
 
 all :  $(NAME)
 

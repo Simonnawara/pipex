@@ -6,26 +6,24 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/25 12:00:02 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/25 18:12:29 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-int main(int argc, char **argv, char **env)
+int main(void)
 {
+	pid_t pid;
+	pid_t pid2;
 
-	/*
-	int i = 0;
-	while (env[i])
+	pid = fork();
+	if (pid == 0)
 	{
-		printf("%s\n", env[i]);
-		i++;
+		pid2 = fork();
+		printf("pid : %d\n", pid2);
 	}
-	*/
-
-	int fd = open("./t.txt", O_WRONLY | O_APPEND);
-	dup2(fd, 2);
-	perror("I will be printed in the file t.txt\n");
+	else if (pid > 0)
+		printf("pid > 0\n");
 	return (0);
 }
