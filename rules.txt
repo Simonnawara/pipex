@@ -27,3 +27,6 @@ Before going further, you have to know how to find any command binary.
 - "Build" the arguments array for the command.
 
 - Execute the command using execve()
+
+
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki
