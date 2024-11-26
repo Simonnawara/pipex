@@ -70,7 +70,7 @@ BONUS_OBJ	= 	$(addprefix $(OBJ_DIR), $(addsuffix .o, $(BONUS_FILES)))
 OBJF		=	.cache_exists
 
 # Make sure SRCS is correctly defined
-TOTAL_FILES := $(words $(SRC))
+TOTAL_FILES := $(words $(SRC) $(addprefix $(SRC_DIR), $(addsuffix .c, $(BONUS_FILES))))
 COMPILED_FILES = 0
 
 define progress_bar
@@ -84,8 +84,8 @@ endef
 
 all: $(NAME)
 
-$(NAME):	$(OBJ)
-			@$(AR) $(NAME) $(OBJ)
+$(NAME):	$(OBJ) $(BONUS_OBJ)
+			@$(AR) $(NAME) $(OBJ) $(BONUS_OBJ)
 			@echo "$(GREEN)\nlibft - Compiled with Success$(DEF_COLOR)"
 
 $(OBJ_DIR)%.o : $(SRC_DIR)%.c | $(OBJF)
@@ -102,11 +102,6 @@ $(OBJF):
 			@mkdir -p $(OBJ_DIR)$(FTLST_DIR)
 			@mkdir -p $(OBJ_DIR)$(FTPRINTF_DIR)
 			@mkdir -p $(OBJ_DIR)$(GET_NEXT_LINE_DIR)
-
-
-bonus:		$(BONUS_OBJ)
-			@$(AR) $(NAME) $(BONUS_OBJ)
-			@echo "$(GREEN)Libft bonus compiled!$(DEF_COLOR)"
 
 clean:
 			@$(RM) -rf $(OBJ_DIR)
