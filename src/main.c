@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/26 17:51:00 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/26 19:04:14 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,6 @@ int file_error(void)
 	exit (1);
 }
 
-// Finds the PATH variable in the environment
-char *get_path(char **env)
-{
-	int i;
-
-	i = 0;
-	while(env[i])
-	{
-		if(ft_strncmp(env[i], "PATH", 4) == 0)
-			return (env[i] + 5);
-		i++;
-	}
-	return (NULL);
-}
-
 // Frees any array that is passed as argument
 void free_array(char **array)
 {
@@ -57,49 +42,18 @@ void free_array(char **array)
 	free(array);
 }
 
+// Function purely created to save lines
 void *free_and_return(char **array, void *return_value)
 {
-    free_array(array); // Free the array
-    return (return_value); // Return the specified value
+    free_array(array);
+    return (return_value);
 }
-
-
-char *build_path(char *cmd, char **env)
-{
-	int	i;
-	char **paths;
-	char *path_var;
-	char *full_path;
-
-	path_var = get_path(env);
-
-	if (!path_var)
-		return (NULL);
-
-	paths = ft_split(path_var, ':');
-	if (!paths)
-		return (NULL);
-
-	i = 0;
-	while(paths[i])
-	{
-		full_path = ft_strjoin(paths[i], "/");
-		if (!full_path)
-			return ((char *)free_and_return(paths, NULL));
-		full_path = ft_strjoin(full_path, cmd);
-		if (!full_path)
-      		return ((char *)free_and_return(paths, NULL));
-		if (access(full_path, F_OK | X_OK) == 0)
-	        return ((char *)free_and_return(paths, full_path));
-		free(full_path);
-		i++;
-	}
-	return (free_and_return(paths, NULL));
-}
-
 
 int main(int argc, char **argv, char **env)
 {
+	char *path_cmd1;
+	char *path_cmd2;
+	
 	if (argc != 5)
 	{
 		ft_printf("Error -> usage : [ ./pipex file1 cmd1 cmd2 file2 ]\n");
@@ -107,21 +61,20 @@ int main(int argc, char **argv, char **env)
 	}
 	else
 	{
-		if(open(argv[1], O_RDONLY) < 0)
+		if(open(argv[1], O_RDONLY) < 0)		// check if infile exists ✔
+			file_error();
+		if ((open(argv[4], O_WRONLY | O_TRUNC | O_CREAT | O_APPEND, 0777 )) < 0) // create an outfile if it doesn't exist ✔
 			file_error();
 
-		if ((open(argv[4], O_WRONLY | O_TRUNC | O_CREAT | O_APPEND, 0777 )) < 0)
-			file_error();
-		// check if infile exists ✔
-		// create an outfile if it doesn't exist ✔
-
-		char *test_path = build_path(argv[2], env);
-		printf("%s\n", test_path);
+		path_cmd1 = build_path(argv[2], env);
+		path_cmd2 = build_path(argv[3], env);
+		printf("%s\n", path_cmd1);
+		printf("%s\n", path_cmd2);
+		execve(path_cmd1, *argv, *env);
 		// We will have to fork twice, and assign child1 to execute cmd1, and child2 to execute cmd2.
 		// The parent will waut at the end.
 
 		// Before executing a command, you have to check if it exists before with the acess() function
-		
 	}
 	return (0);
 }

@@ -6,12 +6,12 @@
 #    By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/29 16:23:18 by sinawara          #+#    #+#              #
-#    Updated: 2024/11/25 10:08:05 by sinawara         ###   ########.fr        #
+#    Updated: 2024/11/26 18:52:25 by sinawara         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
-SRCS = main.c
+SRCS = main.c path.c
 
 CC = gcc
 CCFLAG = -Wall -Werror -Wextra
