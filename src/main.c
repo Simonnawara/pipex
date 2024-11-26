@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/26 16:09:09 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/26 17:51:00 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,41 +26,6 @@ int file_error(void)
 	exit (1);
 }
 
-char **split_path(char *path)
-{
-	return (ft_split(path, ':'));
-}
-
-int main(int argc, char **argv, char **env)
-{
-	int i = 0;
-	while (env[i])
-	{
-		printf("%s\n", env[i]);
-		i++;
-	}
-	if (argc != 5)
-	{
-		ft_printf("Error -> usage : [ ./pipex file1 cmd1 cmd2 file2 ]\n");
-		return (1);
-	}
-	else
-	{
-		if(open(argv[1], O_RDONLY) < 0)
-			file_error();
-		if ((open(argv[4], O_WRONLY | O_TRUNC | O_CREAT | O_APPEND, 0777 )) < 0)
-			file_error();
-		// check if infile exists ✔
-		// create an outfile if it doesn't exist ✔
-
-		// We will have to fork twice, and assign child1 to execute cmd1, and child2 to execute cmd2.
-		// The parent will waut at the end.
-
-		// Before executing a command, you have to check if it exists before with the acess() function
-		
-	}
-	return (0);
-}
 // Finds the PATH variable in the environment
 char *get_path(char **env)
 {
@@ -75,6 +40,29 @@ char *get_path(char **env)
 	}
 	return (NULL);
 }
+
+// Frees any array that is passed as argument
+void free_array(char **array)
+{
+	int i;
+	
+	i = 0;
+	if(!array)
+		return ;
+	while(array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+}
+
+void *free_and_return(char **array, void *return_value)
+{
+    free_array(array); // Free the array
+    return (return_value); // Return the specified value
+}
+
 
 char *build_path(char *cmd, char **env)
 {
@@ -95,22 +83,45 @@ char *build_path(char *cmd, char **env)
 	i = 0;
 	while(paths[i])
 	{
-		full_path = ft_strjoin(paths, "/");
+		full_path = ft_strjoin(paths[i], "/");
 		if (!full_path)
-        {
-            free_array(paths);
-            return (NULL);
-        }
+			return ((char *)free_and_return(paths, NULL));
 		full_path = ft_strjoin(full_path, cmd);
 		if (!full_path)
-        {
-            free_array(paths); // Free all allocated paths
-            return (NULL);
-        }
-		if (access(full_path, F_OK | X_OK) == 0);
-			return (full_path);
+      		return ((char *)free_and_return(paths, NULL));
+		if (access(full_path, F_OK | X_OK) == 0)
+	        return ((char *)free_and_return(paths, full_path));
 		free(full_path);
 		i++;
 	}
-	return (NULL);
+	return (free_and_return(paths, NULL));
+}
+
+
+int main(int argc, char **argv, char **env)
+{
+	if (argc != 5)
+	{
+		ft_printf("Error -> usage : [ ./pipex file1 cmd1 cmd2 file2 ]\n");
+		return (1);
+	}
+	else
+	{
+		if(open(argv[1], O_RDONLY) < 0)
+			file_error();
+
+		if ((open(argv[4], O_WRONLY | O_TRUNC | O_CREAT | O_APPEND, 0777 )) < 0)
+			file_error();
+		// check if infile exists ✔
+		// create an outfile if it doesn't exist ✔
+
+		char *test_path = build_path(argv[2], env);
+		printf("%s\n", test_path);
+		// We will have to fork twice, and assign child1 to execute cmd1, and child2 to execute cmd2.
+		// The parent will waut at the end.
+
+		// Before executing a command, you have to check if it exists before with the acess() function
+		
+	}
+	return (0);
 }
