@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/26 20:06:44 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/26 20:10:38 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,8 @@ int main(int argc, char **argv, char **env)
 
 		path_cmd1 = build_path(argv[2], env);
 		path_cmd2 = build_path(argv[3], env);
-		printf("%s\n", path_cmd1);
-		printf("%s\n", path_cmd2);
 		
-		cmd1_args = ft_split(argv[2], ' '); // Split cmd1 arguments
+		cmd1_args = ft_split(argv[2], ' ');
 		cmd2_args = ft_split(argv[3], ' ');
 		
 		if (!path_cmd1 || !path_cmd2 || !cmd1_args || !cmd2_args)
@@ -93,7 +91,10 @@ int main(int argc, char **argv, char **env)
 			printf("Child1 has been created\n");
         	int infile = open(argv[1], O_RDONLY);
         	if (infile < 0)
+			{
+				printf("Error happening in Child 1\n");
             	file_error();
+			}
         	dup2(infile, STDIN_FILENO); // Redirect stdin to infile
     		close(infile);
 
@@ -109,7 +110,10 @@ int main(int argc, char **argv, char **env)
 			printf("Child2 has been created\n");
 			int outfile = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT | O_APPEND, 0777);
 			if (outfile < 0)
-				file_error();
+			{
+				printf("Error happening in Child 2\n");
+            	file_error();
+			}
         	dup2(outfile, STDOUT_FILENO); // Redirect stdout to outfile
         	close(outfile);
 			
@@ -118,18 +122,19 @@ int main(int argc, char **argv, char **env)
         	exit(1);
     	}
 		
+		// Parent waits for both children
+    	waitpid(child1, NULL, 0);
+    	waitpid(child2, NULL, 0);
+
+		// Free allocated resources
+		free(path_cmd1);
+		free(path_cmd2);
+		free_array(cmd1_args);
+		free_array(cmd2_args);
 	}
 
 
-    // Parent waits for both children
-    waitpid(child1, NULL, 0);
-    waitpid(child2, NULL, 0);
 
-    // Free allocated resources
-    free(path_cmd1);
-    free(path_cmd2);
-    free_array(cmd1_args);
-    free_array(cmd2_args);
 
 	return (0);
 }
