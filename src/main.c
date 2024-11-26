@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/26 19:04:14 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/26 20:06:44 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,10 @@ int main(int argc, char **argv, char **env)
 {
 	char *path_cmd1;
 	char *path_cmd2;
+	char **cmd1_args;
+	char **cmd2_args;
+	pid_t child1;
+	pid_t child2;
 	
 	if (argc != 5)
 	{
@@ -70,11 +74,62 @@ int main(int argc, char **argv, char **env)
 		path_cmd2 = build_path(argv[3], env);
 		printf("%s\n", path_cmd1);
 		printf("%s\n", path_cmd2);
-		execve(path_cmd1, *argv, *env);
-		// We will have to fork twice, and assign child1 to execute cmd1, and child2 to execute cmd2.
-		// The parent will waut at the end.
+		
+		cmd1_args = ft_split(argv[2], ' '); // Split cmd1 arguments
+		cmd2_args = ft_split(argv[3], ' ');
+		
+		if (!path_cmd1 || !path_cmd2 || !cmd1_args || !cmd2_args)
+    	{
+        	free(path_cmd1);
+        	free(path_cmd2);
+        	free_array(cmd1_args);
+        	free_array(cmd2_args);
+        	file_error();
+    	}
 
-		// Before executing a command, you have to check if it exists before with the acess() function
+		child1 = fork();
+		if (child1 == 0)
+		{
+			printf("Child1 has been created\n");
+        	int infile = open(argv[1], O_RDONLY);
+        	if (infile < 0)
+            	file_error();
+        	dup2(infile, STDIN_FILENO); // Redirect stdin to infile
+    		close(infile);
+
+        	// Execute cmd1
+        	execve(path_cmd1, cmd1_args, env);
+        	perror("execve"); // If execve fails
+        	exit(1);
+		}
+		
+		child2 = fork();
+    	if (child2 == 0)
+    	{
+			printf("Child2 has been created\n");
+			int outfile = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT | O_APPEND, 0777);
+			if (outfile < 0)
+				file_error();
+        	dup2(outfile, STDOUT_FILENO); // Redirect stdout to outfile
+        	close(outfile);
+			
+        	execve(path_cmd2, cmd2_args, env);
+        	perror("execve"); // If execve fails
+        	exit(1);
+    	}
+		
 	}
+
+
+    // Parent waits for both children
+    waitpid(child1, NULL, 0);
+    waitpid(child2, NULL, 0);
+
+    // Free allocated resources
+    free(path_cmd1);
+    free(path_cmd2);
+    free_array(cmd1_args);
+    free_array(cmd2_args);
+
 	return (0);
 }
