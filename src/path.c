@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 17:55:58 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/27 16:46:45 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/27 18:13:17 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,30 +30,28 @@ char	*get_path(char **env)
 char	*build_path(char *cmd, char **env)
 {
 	int		i;
-	char	**paths;
-	char	*path_var;
-	char	*full_path;
-	char	*temp;
+	t_path	path_struct;
 
-	path_var = get_path(env);
-	if (!path_var)
+	path_struct.path_var = get_path(env);
+	if (!path_struct.path_var)
 		return (NULL);
-	paths = ft_split(path_var, ':');
-	if (!paths)
+	path_struct.paths = ft_split(path_struct.path_var, ':');
+	if (!path_struct.paths)
 		return (NULL);
 	i = -1;
-	while (paths[++i])
+	while (path_struct.paths[++i])
 	{
-		temp = ft_strjoin(paths[i], "/");
-		if (!temp)
-			return ((char *)free_and_return(paths, NULL));
-		full_path = ft_strjoin(temp, cmd);
-		free(temp);
-		if (!full_path)
-			return ((char *)free_and_return(paths, NULL));
-		if (access(full_path, F_OK | X_OK) == 0)
-			return ((char *)free_and_return(paths, full_path));
-		free(full_path);
+		path_struct.temp = ft_strjoin(path_struct.paths[i], "/");
+		if (!path_struct.temp)
+			return ((char *)free_and_return(path_struct.paths, NULL));
+		path_struct.full_path = ft_strjoin(path_struct.temp, cmd);
+		free(path_struct.temp);
+		if (!path_struct.full_path)
+			return ((char *)free_and_return(path_struct.paths, NULL));
+		if (access(path_struct.full_path, F_OK | X_OK) == 0)
+			return ((char *)free_and_return(path_struct.paths,
+					path_struct.full_path));
+		free(path_struct.full_path);
 	}
-	return (free_and_return(paths, NULL));
+	return (free_and_return(path_struct.paths, NULL));
 }

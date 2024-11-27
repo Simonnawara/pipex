@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:25:52 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/27 14:12:31 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/27 18:23:26 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,14 @@ typedef struct s_args
 	char	**cmd2_args;
 	int		pipe_fd[2];
 }			t_args;
+
+typedef struct s_path
+{
+	char	**paths;
+	char	*path_var;
+	char	*full_path;
+	char	*temp;
+}			t_path;
 
 // path.c //
 char		*get_path(char **env);

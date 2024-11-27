@@ -1,5 +1,9 @@
-Hello
-World
-How
-Are
-You
+Makefile
+includes
+infile.txt
+libft
+obj
+outifle.txt
+pipex
+rules.txt
+src
