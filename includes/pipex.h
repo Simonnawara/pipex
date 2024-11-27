@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:25:52 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/26 18:53:22 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/27 14:12:31 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,28 @@
 # include <sys/types.h>
 # include <unistd.h>
 
+typedef struct s_args
+{
+	char	*path_cmd1;
+	char	*path_cmd2;
+	char	**cmd1_args;
+	char	**cmd2_args;
+	int		pipe_fd[2];
+}			t_args;
+
 // path.c //
-char	*get_path(char **env);
-char	*build_path(char *cmd, char **env);
+char		*get_path(char **env);
+char		*build_path(char *cmd, char **env);
+
+// free_and_error.c //
+int			file_error(void);
+void		free_array(char **array);
+void		*free_and_return(char **array, void *return_value);
+void		free_all(char *arg1, char *arg2, char **arr1, char **arr2);
 
 // main.c //
-int file_error(void);
-void free_array(char **array);
-void *free_and_return(char **array, void *return_value);
+int			file_error(void);
+void		free_array(char **array);
+void		*free_and_return(char **array, void *return_value);
 
 #endif

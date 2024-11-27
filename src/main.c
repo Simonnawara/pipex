@@ -6,13 +6,13 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/27 11:11:38 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/27 14:19:59 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-/* 
+/*
 argv[0] = program name
 argv[1] = infile
 argv[2] = cmd1
@@ -20,129 +20,92 @@ argv[3] = cmd2
 argv[4] = outfile
 */
 
-int file_error(void)
+void	handle_child1(t_args *args, char *in, char **env)
 {
-	perror("Error opening the file ");
-	exit (1);
+	int	infile;
+
+	infile = open(in, O_RDONLY);
+	dup2(infile, STDIN_FILENO);
+	close(infile);
+	dup2(args->pipe_fd[1], STDOUT_FILENO);
+	close(args->pipe_fd[0]);
+	execve(args->path_cmd1, args->cmd1_args, env);
+	exit(1);
 }
 
-// Frees any array that is passed as argument
-void free_array(char **array)
+void	handle_child2(t_args *args, char *out, char **env)
 {
-	int i;
-	
-	i = 0;
-	if(!array)
-		return ;
-	while(array[i])
-	{
-		free(array[i]);
-		i++;
-	}
-	free(array);
+	int	outfile;
+
+	outfile = open(out, O_WRONLY | O_TRUNC | O_CREAT, 0777);
+	dup2(args->pipe_fd[0], STDIN_FILENO);
+	close(args->pipe_fd[1]);
+	dup2(outfile, STDOUT_FILENO);
+	close(outfile);
+	execve(args->path_cmd2, args->cmd2_args, env);
+	exit(1);
 }
 
-// Function purely created to save lines
-void *free_and_return(char **array, void *return_value)
+void	validate_inputs(int argc, char **argv)
 {
-    free_array(array);
-    return (return_value);
-}
-
-int main(int argc, char **argv, char **env)
-{
-	int infile;
-	int outfile;
-	int pipe_fd[2];
-	char *path_cmd1;
-	char *path_cmd2;
-	char **cmd1_args;
-	char **cmd2_args;
-	pid_t child1;
-	pid_t child2;
-	
 	if (argc != 5)
 	{
 		ft_printf("Error -> usage : [ ./pipex file1 cmd1 cmd2 file2 ]\n");
-		return (1);
-	}
-	else
-	{
-		if(open(argv[1], O_RDONLY) < 0)		// check if infile exists ✔
-			file_error();
-		if ((open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0777 )) < 0) // create an outfile if it doesn't exist ✔
-				file_error();
-				
-		cmd1_args = ft_split(argv[2], ' ');
-		cmd2_args = ft_split(argv[3], ' ');
-		
-	
-
-		path_cmd1 = build_path(cmd1_args[0], env);
-		path_cmd2 = build_path(cmd2_args[0], env);
-		
-		if (!path_cmd1 || !path_cmd2 || !cmd1_args || !cmd2_args)
-    	{
-        	free(path_cmd1);
-        	free(path_cmd2);
-        	free_array(cmd1_args);
-        	free_array(cmd2_args);
-        	file_error();
-    	}
-
-		pipe(pipe_fd);
-		child1 = fork();
-		if (child1 == 0)
-		{
-			printf("Child1 has been created\n");
-        	infile = open(argv[1], O_RDONLY);
-        	dup2(infile, STDIN_FILENO); // Redirect stdin to infile
-    		close(infile);
-			dup2(pipe_fd[1], STDOUT_FILENO);
-			close(pipe_fd[0]);
-
-        	// Execute cmd1
-        	execve(path_cmd1, cmd1_args, env);
-        	perror("execve"); // If execve fails
-			
-        	exit(1);
-		}
-		
-		child2 = fork();
-    	if (child2 == 0)
-    	{
-			printf("Child2 has been created\n");
-			outfile = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0777);
-			dup2(pipe_fd[0], STDIN_FILENO);
-			close(pipe_fd[1]);
-        	dup2(outfile, STDOUT_FILENO); // Redirect stdout to outfile
-        	close(outfile);
-			
-        	execve(path_cmd2, cmd2_args, env);
-        	perror("execve"); // If execve fails
-        	exit(1);
-    	}
-		
-		printf("%s\n", cmd1_args[0]);
-		printf("%s\n", cmd2_args[0]);
-		if (ft_strncmp(cmd1_args[0], "sleep", 5) == 0 || ft_strncmp(cmd2_args[0], "sleep", 5) == 0)
-		{
-			printf("hello\n");
-			waitpid(child1, NULL, 0);
-			waitpid(child2, NULL, 0);
-		}
-
-
-		// Free allocated resources
-		free(path_cmd1);
-		free(path_cmd2);
-		free_array(cmd1_args);
-		free_array(cmd2_args);
 		exit(1);
 	}
+	if (open(argv[1], O_RDONLY) < 0)
+		file_error();
+	if (open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0777) < 0)
+		file_error();
+}
 
+t_args	*init_args(char **argv, char **env)
+{
+	t_args	*args;
 
+	args = malloc(sizeof(t_args));
+	if (!args)
+		return (NULL);
+	args->cmd1_args = ft_split(argv[2], ' ');
+	args->cmd2_args = ft_split(argv[3], ' ');
+	args->path_cmd1 = build_path(args->cmd1_args[0], env);
+	args->path_cmd2 = build_path(args->cmd2_args[0], env);
+	if (!args->path_cmd1 || !args->path_cmd2 || !args->cmd1_args
+		|| !args->cmd2_args)
+	{
+		free_all(args->path_cmd1, args->path_cmd2, args->cmd1_args,
+			args->cmd2_args);
+		free(args);
+		ft_printf("Error: Non-valid commands\n");
+		exit(1);
+	}
+	return (args);
+}
 
+int	main(int argc, char **argv, char **env)
+{
+	t_args	*args;
+	pid_t	child1;
+	pid_t	child2;
 
-	return (0);
+	args = init_args(argv, env);
+	validate_inputs(argc, argv);
+	if (pipe(args->pipe_fd) < 0)
+		return (perror("Pipe Err"), free_all(args->path_cmd1, args->path_cmd2,
+				args->cmd1_args, args->cmd2_args), free(args), exit(1), 0);
+	child1 = fork();
+	if (child1 == 0)
+		handle_child1(args, argv[1], env);
+	child2 = fork();
+	if (child2 == 0)
+		handle_child2(args, argv[4], env);
+	if (ft_strncmp(args->cmd1_args[0], "sleep", 5) == 0
+		|| ft_strncmp(args->cmd2_args[0], "sleep", 5) == 0)
+	{
+		waitpid(child1, NULL, 0);
+		waitpid(child2, NULL, 0);
+	}
+	free_all(args->path_cmd1, args->path_cmd2, args->cmd1_args,
+		args->cmd2_args);
+	exit(1);
 }
