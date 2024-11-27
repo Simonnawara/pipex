@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 17:55:58 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/26 18:03:48 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/27 16:46:45 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ char	*build_path(char *cmd, char **env)
 	char	**paths;
 	char	*path_var;
 	char	*full_path;
+	char	*temp;
 
 	path_var = get_path(env);
 	if (!path_var)
@@ -43,10 +44,11 @@ char	*build_path(char *cmd, char **env)
 	i = -1;
 	while (paths[++i])
 	{
-		full_path = ft_strjoin(paths[i], "/");
-		if (!full_path)
+		temp = ft_strjoin(paths[i], "/");
+		if (!temp)
 			return ((char *)free_and_return(paths, NULL));
-		full_path = ft_strjoin(full_path, cmd);
+		full_path = ft_strjoin(temp, cmd);
+		free(temp);
 		if (!full_path)
 			return ((char *)free_and_return(paths, NULL));
 		if (access(full_path, F_OK | X_OK) == 0)
