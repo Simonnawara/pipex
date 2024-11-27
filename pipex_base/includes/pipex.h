@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:25:52 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/27 18:23:26 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/27 18:54:45 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,4 @@ int			file_error(void);
 void		free_array(char **array);
 void		*free_and_return(char **array, void *return_value);
 
-#endif
+#endif 
