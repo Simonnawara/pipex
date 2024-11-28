@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:25:52 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/27 18:54:45 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:38:58 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,11 @@ int			file_error(void);
 void		free_array(char **array);
 void		*free_and_return(char **array, void *return_value);
 void		free_all(char *arg1, char *arg2, char **arr1, char **arr2);
+void		free_three(char *arg1, char *arg2, t_args *arg3);
 
 // main.c //
 int			file_error(void);
 void		free_array(char **array);
 void		*free_and_return(char **array, void *return_value);
 
-#endif 
+#endif

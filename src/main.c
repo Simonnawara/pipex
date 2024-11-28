@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/28 10:36:51 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:38:09 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,13 @@ void	validate_inputs(int argc, char **argv)
 {
 	if (argc != 5)
 	{
-		ft_printf("Error -> usage : [ ./pipex file1 cmd1 cmd2 file2 ]\n");
+		ft_printf("Error, Use: './pipex file1 cmd1 cmd2 file2'\n");
 		exit(1);
 	}
 	if (open(argv[1], O_RDONLY) < 0)
 		file_error();
-	if (open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0777) < 0)
-		file_error();
+	//check if commmands are valid
+
 }
 
 t_args	*init_args(char **argv, char **env)
@@ -79,12 +79,12 @@ t_args	*init_args(char **argv, char **env)
 	args->path_cmd2 = build_path(args->cmd2_args[0], env);
 	if (!args->path_cmd1 || !args->path_cmd2)
 	{
-		free(args->path_cmd1);
-		free(args->path_cmd2);
-		free(args);
+		free_three(args->path_cmd1, args->path_cmd2, args);
 		ft_printf("Error: Non-valid commands\n");
 		exit(1);
 	}
+	if (open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0777) < 0)
+		file_error();
 	return (args);
 }
 
@@ -94,8 +94,8 @@ int	main(int argc, char **argv, char **env)
 	pid_t	child1;
 	pid_t	child2;
 
-	args = init_args(argv, env);
 	validate_inputs(argc, argv);
+	args = init_args(argv, env);
 	if (pipe(args->pipe_fd) < 0)
 		return (perror("Pipe Err"), free_all(args->path_cmd1, args->path_cmd2,
 				args->cmd1_args, args->cmd2_args), free(args), exit(1), 0);

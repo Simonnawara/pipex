@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/27 15:55:08 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:06:57 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,14 @@ void	handle_child2(t_args *args, char *out, char **env)
 
 void	validate_inputs(int argc, char **argv)
 {
-	if (argc != 5)
+	if (argc < 5)
 	{
-		ft_printf("Error -> usage : [ ./pipex file1 cmd1 cmd2 file2 ]\n");
+		ft_printf("Error, Use: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2\n");
 		exit(1);
 	}
 	if (open(argv[1], O_RDONLY) < 0)
 		file_error();
-	if (open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0777) < 0)
+	if (open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0777) < 0)
 		file_error();
 }
 
