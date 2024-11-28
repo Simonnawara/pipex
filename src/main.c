@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/28 11:38:09 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:51:28 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ void	validate_inputs(int argc, char **argv)
 	}
 	if (open(argv[1], O_RDONLY) < 0)
 		file_error();
-	//check if commmands are valid
-
 }
 
 t_args	*init_args(char **argv, char **env)

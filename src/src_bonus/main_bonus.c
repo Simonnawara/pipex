@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/28 11:06:57 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:51:16 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,12 @@ void	handle_child2(t_args *args, char *out, char **env)
 
 void	validate_inputs(int argc, char **argv)
 {
-	if (argc < 5)
+	if (argc != 5)
 	{
-		ft_printf("Error, Use: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2\n");
+		ft_printf("Error, Use: './pipex file1 cmd1 cmd2 file2'\n");
 		exit(1);
 	}
 	if (open(argv[1], O_RDONLY) < 0)
-		file_error();
-	if (open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0777) < 0)
 		file_error();
 }
 
@@ -68,17 +66,23 @@ t_args	*init_args(char **argv, char **env)
 		return (NULL);
 	args->cmd1_args = ft_split(argv[2], ' ');
 	args->cmd2_args = ft_split(argv[3], ' ');
-	args->path_cmd1 = build_path(args->cmd1_args[0], env);
-	args->path_cmd2 = build_path(args->cmd2_args[0], env);
-	if (!args->path_cmd1 || !args->path_cmd2 || !args->cmd1_args
-		|| !args->cmd2_args)
+	if (!args->cmd1_args[0] || !args->cmd2_args[0])
 	{
-		free_all(args->path_cmd1, args->path_cmd2, args->cmd1_args,
-			args->cmd2_args);
-		free(args);
+		free_array(args->cmd1_args);
+		free_array(args->cmd2_args);
 		ft_printf("Error: Non-valid commands\n");
 		exit(1);
 	}
+	args->path_cmd1 = build_path(args->cmd1_args[0], env);
+	args->path_cmd2 = build_path(args->cmd2_args[0], env);
+	if (!args->path_cmd1 || !args->path_cmd2)
+	{
+		free_three(args->path_cmd1, args->path_cmd2, args);
+		ft_printf("Error: Non-valid commands\n");
+		exit(1);
+	}
+	if (open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0777) < 0)
+		file_error();
 	return (args);
 }
 
@@ -88,8 +92,8 @@ int	main(int argc, char **argv, char **env)
 	pid_t	child1;
 	pid_t	child2;
 
-	args = init_args(argv, env);
 	validate_inputs(argc, argv);
+	args = init_args(argv, env);
 	if (pipe(args->pipe_fd) < 0)
 		return (perror("Pipe Err"), free_all(args->path_cmd1, args->path_cmd2,
 				args->cmd1_args, args->cmd2_args), free(args), exit(1), 0);
