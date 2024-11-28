@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/28 10:36:51 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/27 15:55:08 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,19 +68,13 @@ t_args	*init_args(char **argv, char **env)
 		return (NULL);
 	args->cmd1_args = ft_split(argv[2], ' ');
 	args->cmd2_args = ft_split(argv[3], ' ');
-	if (!args->cmd1_args[0] || !args->cmd2_args[0])
-	{
-		free_array(args->cmd1_args);
-		free_array(args->cmd2_args);
-		ft_printf("Error: Non-valid commands\n");
-		exit(1);
-	}
 	args->path_cmd1 = build_path(args->cmd1_args[0], env);
 	args->path_cmd2 = build_path(args->cmd2_args[0], env);
-	if (!args->path_cmd1 || !args->path_cmd2)
+	if (!args->path_cmd1 || !args->path_cmd2 || !args->cmd1_args
+		|| !args->cmd2_args)
 	{
-		free(args->path_cmd1);
-		free(args->path_cmd2);
+		free_all(args->path_cmd1, args->path_cmd2, args->cmd1_args,
+			args->cmd2_args);
 		free(args);
 		ft_printf("Error: Non-valid commands\n");
 		exit(1);
