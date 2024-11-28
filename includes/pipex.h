@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:25:52 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/28 11:38:58 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:14:45 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,15 @@ typedef struct s_args
 	int		pipe_fd[2];
 }			t_args;
 
+typedef struct s_args_bonus
+{
+	char	*path_cmd1;
+	char	*path_cmd2;
+	char	**cmd1_args;
+	char	**cmd2_args;
+	int		pipe_fd[2];
+}			t_args_bonus;
+
 typedef struct s_path
 {
 	char	**paths;
@@ -55,5 +64,6 @@ void		free_three(char *arg1, char *arg2, t_args *arg3);
 int			file_error(void);
 void		free_array(char **array);
 void		*free_and_return(char **array, void *return_value);
+void		free_three_bonus(char *arg1, char *arg2, t_args_bonus *arg3);
 
 #endif

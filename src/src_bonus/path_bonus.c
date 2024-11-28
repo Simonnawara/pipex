@@ -6,11 +6,11 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 17:55:58 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/28 11:50:43 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:08:37 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/pipex.h"
+#include "../../includes/pipex.h"
 
 // Finds the PATH variable in the environment
 char	*get_path(char **env)

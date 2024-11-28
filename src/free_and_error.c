@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 14:11:11 by sinawara          #+#    #+#             */
-/*   Updated: 2024/11/28 11:38:45 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/11/28 14:26:05 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	free_all(char *arg1, char *arg2, char **arr1, char **arr2)
 	free_array(arr2);
 }
 
-void free_three(char *arg1, char *arg2, t_args *arg3)
+void	free_three(char *arg1, char *arg2, t_args *arg3)
 {
 	free(arg1);
 	free(arg2);
