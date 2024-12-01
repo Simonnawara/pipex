@@ -36,11 +36,11 @@ RED     = \033[31m
 BURGUNDY = \033[38;5;88m
 BLUE    = \033[34m
 GREEN   = \033[32m
-MINECRAFT_GREEN = \033[38;5;70m 
+MINECRAFT_GREEN = \033[38;5;70m
 YELLOW  = \033[33m
 PINK    = \033[35m
 CYAN    = \033[36m
-ORANGE  = \033[38;5;214m 
+ORANGE  = \033[38;5;214m
 PURPLE  = \033[38;5;93m
 
 LOGO = printf "\n\
@@ -55,10 +55,10 @@ all :  $(NAME)
 
 $(OBJ_DIR)/%.o: $(D_SRCS)%.c | $(OBJ_DIR)
 	@$(CC) $(CCFLAG) -I./libft -I/includes -o $@ -c $<
-	
+
 $(BONUS_OBJ_DIR)/%.o: $(D_BONUS_SRCS)%.c | $(BONUS_OBJ_DIR)
 	@$(CC) $(CCFLAG) -I./libft -I/includes -o $@ -c $<
-	
+
 # Create obj directory if it doesn't exist
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)

@@ -20,31 +20,6 @@ argv[3] = cmd2
 argv[4] = outfile
 */
 
-void	handle_child1(t_args_bonus *args_bonus, char *in, char **env)
-{
-	int	infile;
-
-	infile = open(in, O_RDONLY);
-	dup2(infile, STDIN_FILENO);
-	close(infile);
-	dup2(args_bonus->pipe_fd[1], STDOUT_FILENO);
-	close(args_bonus->pipe_fd[0]);
-	execve(args_bonus->path_cmd1, args_bonus->cmd1_args, env);
-	exit(1);
-}
-
-void	handle_child2(t_args_bonus *args_bonus, char *out, char **env)
-{
-	int	outfile;
-
-	outfile = open(out, O_WRONLY | O_TRUNC | O_CREAT, 0777);
-	dup2(args_bonus->pipe_fd[0], STDIN_FILENO);
-	close(args_bonus->pipe_fd[1]);
-	dup2(outfile, STDOUT_FILENO);
-	close(outfile);
-	execve(args_bonus->path_cmd2, args_bonus->cmd2_args, env);
-	exit(1);
-}
 
 void	validate_inputs(int argc, char **argv)
 {
@@ -59,57 +34,134 @@ void	validate_inputs(int argc, char **argv)
 
 t_args_bonus	*init_args_bonus(int argc, char **argv, char **env)
 {
+	int	i;
 	t_args_bonus	*args_bonus;
 
 	args_bonus = malloc(sizeof(t_args_bonus));
 	if (!args_bonus)
 		return (NULL);
-	args_bonus->cmd1_args = ft_split(argv[2], ' ');
-	args_bonus->cmd2_args = ft_split(argv[3], ' ');
-	if (!args_bonus->cmd1_args[0] || !args_bonus->cmd2_args[0])
+	args_bonus->cmd_count = argc - 3;
+	args_bonus->cmd_args = malloc(sizeof(char **) * args_bonus->cmd_count);
+	if (!args_bonus->cmd_args)
+		return (NULL);
+	args_bonus->cmd_path = malloc(sizeof(char *) * args_bonus->cmd_count);
+	if (!args_bonus->cmd_path)
+		return (NULL);
+    args_bonus->pipe_fd = malloc(sizeof(int *) * (args_bonus->cmd_count - 1));
+	if (!args_bonus->pipe_fd)
+		return (NULL);
+	i = 0;
+	while(i < args_bonus->cmd_count - 1)
 	{
-		free_array(args_bonus->cmd1_args);
-		free_array(args_bonus->cmd2_args);
-		ft_printf("Error: Non-valid commands\n");
-		exit(1);
+		args_bonus->pipe_fd[i] = malloc(sizeof(int) * 2);
+		i++;
 	}
-	args_bonus->path_cmd1 = build_path(args_bonus->cmd1_args[0], env);
-	args_bonus->path_cmd2 = build_path(args_bonus->cmd2_args[0], env);
-	if (!args_bonus->path_cmd1 || !args_bonus->path_cmd2)
+	i = 0;
+	while(i < args_bonus->cmd_count)
 	{
-		free_three_bonus(args_bonus->path_cmd1, args_bonus->path_cmd2, args_bonus);
-		ft_printf("Error: Non-valid commands\n");
-		exit(1);
+		args_bonus->cmd_args[i] = ft_split(argv[i + 2], ' ');
+		if (!args_bonus->cmd_args[i][0])
+		{
+			free_array(args_bonus->cmd_args);
+			ft_printf("Error: Non-valid commands\n");
+			exit(1);
+		}
+        args_bonus->cmd_path[i] = build_path(args_bonus->cmd_args[i][0], env);
+        if (!args_bonus->cmd_path[i])
+		{
+			free(args_bonus->cmd_path);
+			free(args_bonus);
+			ft_printf("Error: Non-valid commands\n");
+			exit(1);
+		}
 	}
 	if (open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0777) < 0)
 		file_error();
 	return (args_bonus);
 }
 
-int	main(int argc, char **argv, char **env)
+void execute_command(t_args_bonus *args_bonus, int cmd_idx, char **env, char *infile, char *outfile)
 {
-	t_args_bonus	*args_bonus;
-	pid_t	child1;
-	pid_t	child2;
+    if (cmd_idx == 0) // First command
+    {
+        int infile;
 
-	validate_inputs(argc, argv);
-	args_bonus = init_args_bonus(argc, argv, env);
-	if (pipe(args_bonus->pipe_fd) < 0)
-		return (perror("Pipe Err"), free_all(args_bonus->path_cmd1, args_bonus->path_cmd2,
-				args_bonus->cmd1_args, args_bonus->cmd2_args), free(args_bonus), exit(1), 0);
-	child1 = fork();
-	if (child1 == 0)
-		handle_child1(args_bonus, argv[1], env);
-	child2 = fork();
-	if (child2 == 0)
-		handle_child2(args_bonus, argv[4], env);
-	if (ft_strncmp(args_bonus->cmd1_args[0], "sleep", 5) == 0
-		|| ft_strncmp(args_bonus->cmd2_args[0], "sleep", 5) == 0)
-	{
-		waitpid(child1, NULL, 0);
-		waitpid(child2, NULL, 0);
-	}
-	free_all(args_bonus->path_cmd1, args_bonus->path_cmd2, args_bonus->cmd1_args,
-		args_bonus->cmd2_args);
-	exit(1);
+		infile = open(infile, O_RDONLY);
+        dup2(infile, STDIN_FILENO);
+		close(infile);
+        dup2(args_bonus->pipe_fd[0][1], STDOUT_FILENO);
+		//close(args_bonus->pipe_fd[0][1]);
+    }
+    else if (cmd_idx == args_bonus->cmd_count - 1) // Last command
+    {
+        int outfile;
+
+		outfile = open(outfile, O_WRONLY | O_TRUNC | O_CREAT, 0777);
+        dup2(args_bonus->pipe_fd[cmd_idx - 1][0], STDIN_FILENO);
+		//close(args_bonus->pipe_fd[cmd_idx - 1][0]);
+        dup2(outfile, STDOUT_FILENO);
+        close(outfile);
+    }
+    else // Middle commands
+    {
+        dup2(args_bonus->pipe_fd[cmd_idx - 1][0], STDIN_FILENO);
+		close(args_bonus->pipe_fd[cmd_idx - 1][0]);
+        dup2(args_bonus->pipe_fd[cmd_idx][1], STDOUT_FILENO);
+		//close(args_bonus->pipe_fd[cmd_idx][1]);
+    }
+
+    for (int i = 0; i < args_bonus->cmd_count - 1; i++) // Close all pipes
+    {
+        close(args_bonus->pipe_fd[i][0]);
+        close(args_bonus->pipe_fd[i][1]);
+    }
+    execve(args_bonus->cmd_path[cmd_idx], args_bonus->cmd_args[cmd_idx], env);
+    perror("Execution error");
+    exit(1);
+}
+
+void create_pipes_and_forks(t_args_bonus *args_bonus, char **argv, int argc, char **env)
+{
+    for (int i = 0; i < args_bonus->cmd_count - 1; i++)
+        pipe(args_bonus->pipe_fd[i]);
+
+    for (int i = 0; i < args_bonus->cmd_count; i++)
+    {
+        pid_t pid = fork();
+        if (pid == 0)
+            execute_command(args_bonus, i, env, argv[1], argv[argc - 1]);
+    }
+
+    for (int i = 0; i < args_bonus->cmd_count - 1; i++) // Parent closes all pipes
+    {
+        close(args_bonus->pipe_fd[i][0]);
+        close(args_bonus->pipe_fd[i][1]);
+    }
+
+    for (int i = 0; i < args_bonus->cmd_count; i++) // Wait for all children
+        wait(NULL);
+}
+
+void free_args_bonus(t_args_bonus *args_bonus)
+{
+    for (int i = 0; i < args_bonus->cmd_count; i++)
+    {
+        free_array(args_bonus->cmd_args[i]);
+        free(args_bonus->cmd_path[i]);
+    }
+    for (int i = 0; i < args_bonus->cmd_count - 1; i++)
+        free(args_bonus->pipe_fd[i]);
+    free(args_bonus->pipe_fd);
+    free(args_bonus->cmd_args);
+    free(args_bonus->cmd_path);
+    free(args_bonus);
+}
+
+int main(int argc, char **argv, char **env)
+{
+    validate_inputs(argc, argv);
+    t_args_bonus *args_bonus = init_args_bonus(argc, argv, env);
+    create_pipes_and_forks(args_bonus, argv, argc ,env);
+    free_args_bonus(args_bonus);
+    return 0;
 }

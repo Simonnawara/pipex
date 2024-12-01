@@ -22,6 +22,7 @@
 # include <stdlib.h>
 # include <sys/types.h>
 # include <unistd.h>
+# include <string.h>
 
 typedef struct s_args
 {
@@ -34,11 +35,10 @@ typedef struct s_args
 
 typedef struct s_args_bonus
 {
-	char	*path_cmd1;
-	char	*path_cmd2;
-	char	**cmd1_args;
-	char	**cmd2_args;
-	int		pipe_fd[2];
+	int		**pipe_fd;
+	int		cmd_count;
+	char	*cmd_path;
+	char	**cmd_args;
 }			t_args_bonus;
 
 typedef struct s_path
