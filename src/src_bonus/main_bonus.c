@@ -6,21 +6,12 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/02 13:04:55 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:03:39 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/pipex.h"
 
-/*
-argv[0] = program name
-argv[1] = infile
-argv[2] = cmd1
-argv[3] = cmd2
-argv[4] = outfile
-*/
-
-// Validates the number of arguments and the input file
 void validate_inputs(int argc, char **argv)
 {
     if (argc < 5)
@@ -30,6 +21,8 @@ void validate_inputs(int argc, char **argv)
     }
     if (open(argv[1], O_RDONLY) < 0)
         file_error();
+	if (open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644) < 0)
+		file_error();
 }
 
 // Initialize t_args_bonus structure and allocate memory
@@ -41,7 +34,6 @@ t_args_bonus *init_args_bonus(int argc, char **argv, char **env)
     args_bonus = malloc(sizeof(t_args_bonus));
     if (!args_bonus)
         return (NULL);
-
     args_bonus->cmd_count = argc - 3;
     args_bonus->cmd_args = malloc(sizeof(char **) * args_bonus->cmd_count);
     args_bonus->cmd_path = malloc(sizeof(char *) * args_bonus->cmd_count);
@@ -52,8 +44,6 @@ t_args_bonus *init_args_bonus(int argc, char **argv, char **env)
         free(args_bonus);
         return (NULL);
     }
-
-    // Process and validate each command
     i = 0;
     while (i < args_bonus->cmd_count)
     {
@@ -77,21 +67,9 @@ t_args_bonus *init_args_bonus(int argc, char **argv, char **env)
         }
         i++;
     }
-
-    // Validate output file access
-    if (open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644) < 0)
-    {
-        file_error();
-        // free_array(args_bonus->cmd_args, args_bonus->cmd_count);
-        free(args_bonus->cmd_path);
-        free(args_bonus);
-        exit(EXIT_FAILURE);
-    }
-
     return (args_bonus);
 }
 
-// Executes a single command based on its index
 static void execute_command(t_args_bonus *args_bonus, int cmd_idx, 
                             char **env, char **argv, int prev_pipe_fd)
 {
@@ -107,7 +85,7 @@ static void execute_command(t_args_bonus *args_bonus, int cmd_idx,
     }
     else if (cmd_idx == args_bonus->cmd_count - 1) // Last command
     {
-        outfile = open(argv[args_bonus->cmd_count + 2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        outfile = open(argv[args_bonus->cmd_count + 2], O_WRONLY | O_CREAT | O_TRUNC, 0777);
         dup2(prev_pipe_fd, STDIN_FILENO);
         close(prev_pipe_fd);
         dup2(outfile, STDOUT_FILENO);
@@ -129,7 +107,6 @@ static void execute_command(t_args_bonus *args_bonus, int cmd_idx,
     exit(EXIT_FAILURE);
 }
 
-// Creates pipes and forks processes for all commands
 static void create_pipes_and_forks(t_args_bonus *args_bonus, char **argv, char **env)
 {
     int i;
@@ -155,7 +132,6 @@ static void create_pipes_and_forks(t_args_bonus *args_bonus, char **argv, char *
         close(args_bonus->pipe_fd[1]); // Parent doesn't need write end
         i++;
     }
-
     // Wait for all child processes
     i = 0;
     while (i++ < args_bonus->cmd_count)
@@ -188,9 +164,7 @@ int main(int argc, char **argv, char **env)
     args_bonus = init_args_bonus(argc, argv, env);
     if (!args_bonus)
         return (EXIT_FAILURE);
-
     create_pipes_and_forks(args_bonus, argv, env);
     free_args_bonus(args_bonus);
-
     return (0);
 }

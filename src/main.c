@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/02 12:56:30 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:10:38 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ t_args	*init_args(char **argv, char **env)
 		free_array(args->cmd1_args);
 		free_array(args->cmd2_args);
 		ft_printf("Error: Non-valid commands\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	args->path_cmd1 = build_path(args->cmd1_args[0], env);
 	args->path_cmd2 = build_path(args->cmd2_args[0], env);
@@ -81,7 +81,7 @@ t_args	*init_args(char **argv, char **env)
 	{
 		free_three(args->path_cmd1, args->path_cmd2, args);
 		ft_printf("Error: Non-valid commands\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	
 	return (args);
@@ -112,5 +112,6 @@ int	main(int argc, char **argv, char **env)
 	}
 	free_all(args->path_cmd1, args->path_cmd2, args->cmd1_args,
 		args->cmd2_args);
+	free(args);
 	exit(1);
 }
