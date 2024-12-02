@@ -238,6 +238,3 @@ You need to check if the command exists before its execution with `access()`, el
 I hope this repository proves useful to you, whether you're working on the Pipex project yourself, exploring my profile, or just curious about the 42 curriculum.
 <br />Feel free to dive in, learn, and adapt the code as you see fit.
 <br />Best of luck on your coding journey! 🚀
-[3] Handle file rights when `open()`ing them.
-Return error if the file cannot be opened, read or written. 
-Check how the shell treats infile and outfile when they do not exist, are not readable, writable etc. (chmod is your best friend).
