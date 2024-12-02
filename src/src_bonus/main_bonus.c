@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/02 14:03:39 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/02 16:01:50 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,12 @@ t_args_bonus *init_args_bonus(int argc, char **argv, char **env)
         free(args_bonus);
         return (NULL);
     }
-    i = 0;
-    while (i < args_bonus->cmd_count)
+    i = -1;
+    while (++i < args_bonus->cmd_count)
     {
         args_bonus->cmd_args[i] = ft_split(argv[i + 2], ' ');
         if (!args_bonus->cmd_args[i] || !args_bonus->cmd_args[i][0])
         {
-            // free_array(args_bonus->cmd_args);
             free(args_bonus->cmd_path);
             free(args_bonus);
             ft_printf("Error: Invalid command\n");
@@ -59,13 +58,11 @@ t_args_bonus *init_args_bonus(int argc, char **argv, char **env)
         args_bonus->cmd_path[i] = build_path(args_bonus->cmd_args[i][0], env);
         if (!args_bonus->cmd_path[i])
         {
-            // free_array(args_bonus->cmd_args, args_bonus->cmd_count);
             free(args_bonus->cmd_path);
             free(args_bonus);
             ft_printf("Error: Command not found: %s\n", args_bonus->cmd_args[i][0]);
             exit(EXIT_FAILURE);
         }
-        i++;
     }
     return (args_bonus);
 }
@@ -96,12 +93,10 @@ static void execute_command(t_args_bonus *args_bonus, int cmd_idx,
         dup2(prev_pipe_fd, STDIN_FILENO);
         dup2(args_bonus->pipe_fd[1], STDOUT_FILENO);
     }
-
     close(args_bonus->pipe_fd[0]);
     close(args_bonus->pipe_fd[1]);
     if (prev_pipe_fd >= 0)
         close(prev_pipe_fd);
-
     execve(args_bonus->cmd_path[cmd_idx], args_bonus->cmd_args[cmd_idx], env);
     perror("execve failed");
     exit(EXIT_FAILURE);
@@ -115,8 +110,8 @@ static void create_pipes_and_forks(t_args_bonus *args_bonus, char **argv, char *
     int status;
 
     prev_pipe_fd = -1;
-    i = 0;
-    while (i < args_bonus->cmd_count)
+    i = -1;
+    while (++i < args_bonus->cmd_count)
     {
         if (i < args_bonus->cmd_count - 1 && pipe(args_bonus->pipe_fd) < 0)
             exit(EXIT_FAILURE);
@@ -130,9 +125,7 @@ static void create_pipes_and_forks(t_args_bonus *args_bonus, char **argv, char *
         if (i < args_bonus->cmd_count - 1)
             prev_pipe_fd = args_bonus->pipe_fd[0];
         close(args_bonus->pipe_fd[1]); // Parent doesn't need write end
-        i++;
     }
-    // Wait for all child processes
     i = 0;
     while (i++ < args_bonus->cmd_count)
         wait(&status);
