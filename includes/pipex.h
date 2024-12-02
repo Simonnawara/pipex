@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:25:52 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/02 12:45:59 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/02 15:34:43 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_args_bonus
 {
 	int		pipe_fd[2];
 	int		cmd_count;
+	int		prev_pipe_fd;
 	char	**cmd_path;
 	char	***cmd_args;
 }			t_args_bonus;
@@ -59,6 +60,7 @@ void		free_array(char **array);
 void		*free_and_return(char **array, void *return_value);
 void		free_all(char *arg1, char *arg2, char **arr1, char **arr2);
 void		free_three(char *arg1, char *arg2, t_args *arg3);
+void	free_and_exit(char *arg1, char *arg2);
 
 // main.c //
 int			file_error(void);

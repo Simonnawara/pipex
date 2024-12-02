@@ -6,19 +6,11 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/02 14:10:38 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:18:46 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
-
-/*
-argv[0] = program name
-argv[1] = infile
-argv[2] = cmd1
-argv[3] = cmd2
-argv[4] = outfile
-*/
 
 void	handle_child1(t_args *args, char *in, char **env)
 {
@@ -83,7 +75,6 @@ t_args	*init_args(char **argv, char **env)
 		ft_printf("Error: Non-valid commands\n");
 		exit(EXIT_FAILURE);
 	}
-	
 	return (args);
 }
 
