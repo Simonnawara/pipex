@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/02 14:18:46 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:26:21 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	handle_child1(t_args *args, char *in, char **env)
 	dup2(args->pipe_fd[1], STDOUT_FILENO);
 	close(args->pipe_fd[0]);
 	execve(args->path_cmd1, args->cmd1_args, env);
-	exit(1);
+	exit(EXIT_SUCCESS);
 }
 
 void	handle_child2(t_args *args, char *out, char **env)
@@ -35,7 +35,7 @@ void	handle_child2(t_args *args, char *out, char **env)
 	dup2(outfile, STDOUT_FILENO);
 	close(outfile);
 	execve(args->path_cmd2, args->cmd2_args, env);
-	exit(1);
+	exit(EXIT_SUCCESS);
 }
 
 void	validate_inputs(int argc, char **argv)
@@ -43,7 +43,7 @@ void	validate_inputs(int argc, char **argv)
 	if (argc != 5)
 	{
 		ft_printf("Error, Use: './pipex file1 cmd1 cmd2 file2'\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	if (open(argv[1], O_RDONLY) < 0)
 		file_error();
@@ -104,5 +104,5 @@ int	main(int argc, char **argv, char **env)
 	free_all(args->path_cmd1, args->path_cmd2, args->cmd1_args,
 		args->cmd2_args);
 	free(args);
-	exit(1);
+	exit(0);
 }

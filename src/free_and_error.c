@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 14:11:11 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/03 09:36:10 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:24:20 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	file_error(void)
 {
 	perror("Error opening the file ");
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 // Frees any array that is passed as argument

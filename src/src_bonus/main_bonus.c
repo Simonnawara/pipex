@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/03 10:13:45 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:21:28 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ void	execute_command(t_args_bonus *args_bonus, int cmd_idx, char **env,
 	exit(EXIT_FAILURE);
 }
 
-// Main function
 int	main(int argc, char **argv, char **env)
 {
 	t_args_bonus	*args_bonus;
