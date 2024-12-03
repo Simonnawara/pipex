@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_and_error_bonus.c                             :+:      :+:    :+:   */
+/*   free_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 14:11:11 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/02 10:22:21 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:18:55 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	file_error(void)
 {
 	perror("Error opening the file ");
-	exit(EXIT_FAILURE);
+	exit(1);
 }
 
 // Frees any array that is passed as argument
@@ -49,7 +49,7 @@ void	free_all(char *arg1, char *arg2, char **arr1, char **arr2)
 	free_array(arr2);
 }
 
-void	free_three_bonus(char *arg1, char *arg2, t_args_bonus *arg3)
+void	free_three(char *arg1, char *arg2, t_args *arg3)
 {
 	free(arg1);
 	free(arg2);

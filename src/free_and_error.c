@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 14:11:11 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/02 15:28:33 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/03 09:36:10 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,4 @@ void	free_three(char *arg1, char *arg2, t_args *arg3)
 	free(arg1);
 	free(arg2);
 	free(arg3);
-}
-
-void	free_and_exit(char *arg1, char *arg2)
-{
-	free(arg1);
-	free(arg2);
-	ft_printf("Error: Invalid command\n");
-	exit(EXIT_FAILURE);
 }

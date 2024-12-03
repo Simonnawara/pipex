@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:25:52 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/02 16:05:54 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:14:18 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,22 @@ void		free_array(char **array);
 void		*free_and_return(char **array, void *return_value);
 void		free_all(char *arg1, char *arg2, char **arr1, char **arr2);
 void		free_three(char *arg1, char *arg2, t_args *arg3);
-void	free_and_exit(char *arg1, char *arg2);
-
+void		free_and_exit(void *arg1, void *arg2);
 // main.c //
 int			file_error(void);
 void		free_array(char **array);
 void		*free_and_return(char **array, void *return_value);
-void		free_three_bonus(char *arg1, char *arg2, t_args_bonus *arg3);
 
-// bonus.c //
-void	validate_inputs(int argc, char **argv);
+// bonus_utils.c //
+void	create_pipes_and_forks(t_args_bonus *args_bonus, char **argv,
+		char **env);
+void	free_args_bonus(t_args_bonus *args_bonus);
+void	free_and_exit(void *arg1, void *arg2);
+
+// main_bonus.c //
+void	validate_inputs_bonus(int argc, char **argv);
+void	redirect_input(t_args_bonus *args_bonus, char **argv);
+void	execute_command(t_args_bonus *args_bonus, int cmd_idx, char **env,
+		char **argv);
+t_args_bonus	*init_args_bonus(int argc, char **argv, char **env);
 #endif
