@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bonus_utils.c                                      :+:      :+:    :+:   */
+/*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 14:11:11 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/03 10:11:14 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/03 12:02:28 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,6 @@ void	free_and_exit(void *arg1, void *arg2)
 {
 	free(arg1);
 	free(arg2);
-	ft_printf("Error: Invalid command\n");
+	ft_putendl_fd("Error: Invalid command", 2);
 	exit(EXIT_FAILURE);
 }

@@ -6,23 +6,28 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:36 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/03 10:21:28 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/03 13:07:15 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/pipex.h"
 
+// Function that checks if all inputs are valid before proceeding
 void	validate_inputs_bonus(int argc, char **argv)
 {
 	if (argc < 5)
 	{
-		ft_printf("Error: Use ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2\n");
+		ft_putendl_fd
+		("Error: Use ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2", 2);
 		exit(EXIT_FAILURE);
 	}
 	if (open(argv[1], O_RDONLY) < 0)
-		file_error();
+	{
+		open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		file_error_bonus(argv[1]);
+	}
 	if (open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644) < 0)
-		file_error();
+		file_error_bonus(argv[argc - 1]);
 }
 
 // Initialize t_args_bonus structure and allocate memory
@@ -55,6 +60,7 @@ t_args_bonus	*init_args_bonus(int argc, char **argv, char **env)
 	return (args_bonus);
 }
 
+// Function created to save lines in the execute_command function
 void	redirect_input(t_args_bonus *args_bonus, char **argv)
 {
 	int	infile;
@@ -65,6 +71,8 @@ void	redirect_input(t_args_bonus *args_bonus, char **argv)
 	dup2(args_bonus->pipe_fd[1], STDOUT_FILENO);
 }
 
+// Function that executes the command given as arguments
+// based on their position (first, middle, last).
 void	execute_command(t_args_bonus *args_bonus, int cmd_idx, char **env,
 		char **argv)
 {

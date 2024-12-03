@@ -6,15 +6,16 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 14:11:11 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/03 10:24:51 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/03 13:02:41 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/pipex.h"
 
-int	file_error(void)
+int	file_error_bonus(char *filename)
 {
-	perror("Error opening the file ");
+	write(2, filename, ft_strlen(filename));
+	perror(" ");
 	exit(EXIT_FAILURE);
 }
 

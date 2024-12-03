@@ -6,14 +6,14 @@
 #    By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/29 16:23:18 by sinawara          #+#    #+#              #
-#    Updated: 2024/12/03 10:19:02 by sinawara         ###   ########.fr        #
+#    Updated: 2024/12/03 11:00:45 by sinawara         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
 BONUS = pipex_bonus
 SRCS = main.c path.c free_and_error.c
-BONUS_SRCS = main_bonus.c bonus_utils.c path_bonus.c free_bonus.c
+BONUS_SRCS = main_bonus.c utils_bonus.c path_bonus.c free_bonus.c
 
 CC = gcc
 CCFLAG = -Wall -Werror -Wextra

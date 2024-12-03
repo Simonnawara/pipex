@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 17:55:58 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/03 10:18:06 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/03 11:11:54 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@ char	*get_path(char **env)
 	return (NULL);
 }
 
+// Splits the path at every ":"
+// Builds it using "/"
+// Checks if the given command exists in each path to find the correct one
+// Using the access function.
 char	*build_path(char *cmd, char **env)
 {
 	int		i;
