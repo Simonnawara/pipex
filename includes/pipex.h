@@ -6,7 +6,7 @@
 /*   By: sinawara <sinawara@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:25:52 by sinawara          #+#    #+#             */
-/*   Updated: 2024/12/03 13:06:46 by sinawara         ###   ########.fr       */
+/*   Updated: 2024/12/17 11:41:46 by sinawara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <sys/types.h>
+# include <sys/wait.h>
 # include <unistd.h>
 
 typedef struct s_args

@@ -15,7 +15,14 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+# include <stdint.h>
 # include <stdio.h>
+# include <stddef.h>
+# include <fcntl.h>
+# include <limits.h>
+# include <string.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 typedef struct s_list
 {
